@@ -1,12 +1,12 @@
-const TOKEN ='7636130435:AAGO6lV_ptqI8z4ZMK3dkNc-arDnax5xvyI';
-const url = 'https://the-white-shark.vercel.app'; // Vercel deployment URL
+const TOKEN = "7636130435:AAGO6lV_ptqI8z4ZMK3dkNc-arDnax5xvyI";
+const url = "https://thewhiteshark.vercel.app/"; // Vercel deployment URL
 const port = 3300;
 
-const TelegramBot = require('node-telegram-bot-api');
-const express = require('express');
+const TelegramBot = require("node-telegram-bot-api");
+const express = require("express");
 
 // No need to pass any parameters as we will handle the updates with Express
-const bot = new TelegramBot(TOKEN);
+const bot = new TelegramBot(TOKEN, { polling: true });
 
 // This informs the Telegram servers of the new webhook.
 bot.setWebHook(`${url}/bot${TOKEN}`);
@@ -28,9 +28,18 @@ app.listen(port, () => {
 });
 
 // Just to ping!
-bot.on('message', msg => {
-  bot.sendMessage(msg.chat.id, 'I am alive!');
+bot.on("message", (msg) => {
+  bot.sendMessage(msg.chat.id, "I am alive!");
 });
+
+// bot.onText(/\/start/, (msg) => {
+//   const chatId = msg.chat.id;
+//   bot.sendMessage(chatId, "Hello, this is a simple response."); // Simplified response for testing
+// });
+
+app.get('/',(req,res)=>{
+  res.send("It is Working")
+})
 
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
