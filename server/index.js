@@ -32,5 +32,3 @@ bot.on('text', (ctx) => {
   ctx.replyWithHTML('<b>Hello</b>'); // Reply with bold "Hello"
 });
 
-// Launch the bot (useful for local testing but not required on Vercel)
-bot.launch();
