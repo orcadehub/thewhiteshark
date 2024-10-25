@@ -1,26 +1,15 @@
 {
-<<<<<<< HEAD
-    "version": 2,
-    "builds": [
-      {
-        "src": "index.js",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "index.js"
-      }
-    ]
-  }
-=======
   "version": 2,
   "builds": [
-    { "src": "api/webhook.js", "use": "@vercel/node" }
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
-    { "src": "/webhook", "dest": "/api/webhook.js" }
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
   ]
 }
->>>>>>> edac362f1c1bad51e71061604e25f47304705bd1
