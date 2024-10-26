@@ -22,11 +22,14 @@ app.listen(port, () => {
 
   // Set webhook to the Vercel deployment URL
   const webhookURL = `${url}/bot${TOKEN}`;
-  bot.setWebHook(webhookURL).then(() => {
-    console.log(`Webhook set to: ${webhookURL}`);
-  }).catch(err => {
-    console.error("Error setting webhook:", err);
-  });
+  bot
+    .setWebHook(webhookURL)
+    .then(() => {
+      console.log(`Webhook set to: ${webhookURL}`);
+    })
+    .catch((err) => {
+      console.error("Error setting webhook:", err);
+    });
 });
 
 // Create the bot instance WITHOUT polling
@@ -50,6 +53,6 @@ bot.onText(/\/start/, (msg) => {
 });
 
 // Basic route to check if the server is running
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.send("It is Working");
 });
