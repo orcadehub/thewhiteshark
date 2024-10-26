@@ -1,3 +1,115 @@
-div{
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  text-align: center;
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.flag {
+  width: 40px;
+  height: auto;
+  margin-right: 10px;
+  border-radius: 5px;
+}
+
+.country-code {
+  background-color: #333;
   color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  flex: 0 0 auto;
+  max-width: 100px;
+}
+
+.mobile-number {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  flex: 1;
+  min-width: 150px;
+}
+
+.continue-button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.or-divider {
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.social-button {
+  display: flex;
+  align-items: center;
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 5px 0;
+  cursor: pointer;
+  justify-content: center;
+}
+
+.social-button img {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+@media (max-width: 600px) {
+  .input-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .country-code,
+  .mobile-number {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .flag {
+    margin-bottom: 10px;
+  }
+  .apple img {
+    padding: 5px; /* Add padding to the Apple icon */
+    filter: brightness(0) invert(1); /* Change the icon color to white */
+  }
 }

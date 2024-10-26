@@ -42,3 +42,4 @@ bot.on('text', (ctx) => {
   console.log("Received text message:", ctx.message.text); // Log the incoming text
   ctx.replyWithHTML('<b>Hello</b>'); // Reply with bold "Hello"
 });
+bot.launch()
