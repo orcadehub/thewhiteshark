@@ -1,0 +1,113 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.content {
+  color: white;
+  text-align: center;
+  margin-top: 14px;
+}
+.content h3 {
+  font-size: 20px;
+}
+.content p {
+  margin-top: 3px;
+}
+.col {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 10px;
+}
+.col p {
+  color: rgb(131, 134, 134);
+}
+.col h3 {
+  margin-top: 5px;
+}
+.friends {
+  margin: 8px;
+  padding: 15px;
+  border-radius: 17px;
+  padding-right: 35px;
+  background-color: rgb(31, 32, 32);
+}
+.friends1 {
+  margin: 8px;
+  padding: 15px;
+  padding-right: 35px;
+  background-color: rgb(31, 32, 32);
+  border-radius: 17px;
+}
+.col2 {
+  color: rgb(131, 134, 134);
+  margin: 5px;
+  font-size: 15px;
+  list-style-type: disc;
+}
+.span {
+  color: white;
+}
+.col2 ul li {
+  padding-left: 27px;
+  list-style-type: disc;
+}
+.name {
+  color: rgb(131, 134, 134);
+  font-size: 15px;
+  margin: 5px;
+  padding-left: 27px;
+  margin-top: 20px;
+}
+.span2 {
+  padding-right: 14px;
+}
+.ol {
+  font-size: 18px;
+  margin: 5px;
+}
+.ol ol li {
+  padding-left: 27px;
+  padding-top: 8px;
+}
+table,
+tr,
+td,
+th {
+  border: 2px solid orange;
+  padding-right: 24px;
+  color: white;
+}
+.display {
+  color: rgb(131, 134, 134);
+  font-size: 15px;
+  padding-left: 60px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+.button {
+  display: flex;
+  flex-direction: row;
+  margin: 12px;
+}
+.btn button {
+  background-color: rgb(243, 243, 13);
+  font-size: 20px;
+  border-radius: 25px;
+  border: none;
+  outline: none;
+  padding-left: 68px;
+  padding-right: 68px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.btn2 h1 i {
+  background-color: yellow;
+  border-radius: 25px;
+  padding: 10px;
+  outline: black;
+  margin-left: 15px;
+  color: black;
+  font-size: 25px;
+}

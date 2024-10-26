@@ -1,0 +1,97 @@
+/* *{
+    box-sizing: border-box;
+}
+.header{
+    position:absolute;
+    bottom: 2px;
+    border: 2px solid orange;
+    background-color: black;
+    color: orange;
+    height: 70px;
+    width: 100%;
+    display: flex;
+    border-radius: 20%;
+    justify-content: space-evenly;
+}
+.menu{
+    width: 15%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+i{
+    font-size: 30px;
+} */
+
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header{
+    padding-top: 10px;
+    color: white;
+}
+.btn1{
+    height: 90px;
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: rgb(48, 48, 202);
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+
+    border-radius: 60px;
+}
+.container{
+    padding-top: 30px;
+}
+.container1{
+color: white;
+    padding: 20px;
+    padding-top: 40px;
+    font-size: 20px;
+}
+.container2{
+    color: white;
+    text-align: center;
+    padding-left: 20px;
+    padding-top: 20px;
+    font-size: 30px;
+}
+.footer{
+    background-color: #333;
+    padding: 10px 0;
+    position:fixed;
+    bottom: 0;
+    width: 100%;
+padding-bottom: 20px;
+    border-bottom: 20px;
+}
+.footer-icons{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.footer-icon{
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    flex-grow: 1;
+    margin: 0 10px;
+    padding: 10px;
+    border-radius: 10px;
+    
+}
+.footer-icon i{
+    font-size: 20px;
+}
+.footer-icon span{
+    display: block;
+    font-size: 12px;
+    margin-top:10px;
+}
