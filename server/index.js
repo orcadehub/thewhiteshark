@@ -1,45 +1,55 @@
-const { Telegraf } = require('telegraf');
-const express = require('express');
-
 const TOKEN = "7636130435:AAGO6lV_ptqI8z4ZMK3dkNc-arDnax5xvyI";
-const WEBHOOK_URL = `https://thewhiteshark.vercel.app/bot${TOKEN}`; // Set webhook URL dynamically
-const bot = new Telegraf(TOKEN);
+const url = "https://thewhiteshark.vercel.app"; // Your Vercel deployment URL
+const port = process.env.PORT || 3300;
+
+const TelegramBot = require("node-telegram-bot-api");
+const express = require("express");
 
 const app = express();
 
-// Middleware to handle JSON data from Telegram
+// Parse the updates to JSON
 app.use(express.json());
 
-// Set the webhook automatically when the app starts
-bot.telegram.setWebhook(WEBHOOK_URL).then(() => {
-  console.log("Webhook set successfully:", WEBHOOK_URL);
-}).catch((err) => {
-  console.error("Error setting webhook:", err);
-});
-
-// Define the webhook route using the TOKEN variable
+// Webhook route to receive updates from Telegram
 app.post(`/bot${TOKEN}`, (req, res) => {
-  console.log("Received an update from Telegram:", req.body); // Log incoming updates
-  bot.handleUpdate(req.body).catch(err => console.error("Error processing update:", err)); // Log any processing errors
-  res.sendStatus(200); // Respond to Telegram with a 200 OK
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
 });
 
-// Optional route for testing if the server is running
-app.get('/', (req, res) => {
-  res.send('Bot is running on Vercel!');
-});
+// Start Express Server
+app.listen(port, () => {
+  console.log(`Express server is listening on port ${port}`);
 
-// Only start the Express server if running locally (not on Vercel)
-if (process.env.NODE_ENV !== 'production') {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  // Set webhook to the Vercel deployment URL
+  const webhookURL = `${url}/bot${TOKEN}`;
+  bot.setWebHook(webhookURL).then(() => {
+    console.log(`Webhook set to: ${webhookURL}`);
+  }).catch(err => {
+    console.error("Error setting webhook:", err);
   });
-}
-
-// Handle incoming text messages
-bot.on('text', (ctx) => {
-  console.log("Received text message:", ctx.message.text); // Log the incoming text
-  ctx.replyWithHTML('<b>Hello</b>'); // Reply with bold "Hello"
 });
-bot.launch()
+
+// Create the bot instance WITHOUT polling
+const bot = new TelegramBot(TOKEN);
+
+// Respond to the /start command with a button to open the web app
+bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, "Open the web app inside Telegram:", {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          {
+            text: "Open Web App",
+            web_app: { url: "https://thewhiteshark.io/" }, // Your web app URL
+          },
+        ],
+      ],
+    },
+  });
+});
+
+// Basic route to check if the server is running
+app.get('/', (req, res) => {
+  res.send("It is Working");
+});
