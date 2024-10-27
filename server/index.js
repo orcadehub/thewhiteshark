@@ -6,8 +6,6 @@ const TelegramBot = require("node-telegram-bot-api");
 const express = require("express");
 
 const app = express();
-
-// Parse the updates to JSON
 app.use(express.json());
 
 // Webhook route to receive updates from Telegram
@@ -16,24 +14,24 @@ app.post(`/bot${TOKEN}`, (req, res) => {
   res.sendStatus(200);
 });
 
-// Start Express Server
-app.listen(port, () => {
-  console.log(`Express server is listening on port ${port}`);
-
-  // Set webhook to the Vercel deployment URL
-  const webhookURL = `${url}/bot${TOKEN}`;
-  bot
-    .setWebHook(webhookURL)
-    .then(() => {
-      console.log(`Webhook set to: ${webhookURL}`);
-    })
-    .catch((err) => {
-      console.error("Error setting webhook:", err);
-    });
-});
-
-// Create the bot instance WITHOUT polling
+// Create the bot instance without polling
 const bot = new TelegramBot(TOKEN);
+
+// Set webhook once, outside of any Express or server functions
+const webhookURL = `${url}/bot${TOKEN}`;
+bot
+  .setWebHook(webhookURL)
+  .then(() => {
+    console.log(`Webhook set to: ${webhookURL}`);
+  })
+  .catch((err) => {
+    console.error("Error setting webhook:", err);
+  });
+
+// Basic route to check if the server is running
+app.get("/", (req, res) => {
+  res.send("It is Working");
+});
 
 // Respond to the /start command with a button to open the web app
 bot.onText(/\/start/, (msg) => {
@@ -52,7 +50,7 @@ bot.onText(/\/start/, (msg) => {
   });
 });
 
-// Basic route to check if the server is running
-app.get("/", (req, res) => {
-  res.send("It is Working");
+// Start Express Server
+app.listen(port, () => {
+  console.log(`Express server is listening on port ${port}`);
 });
