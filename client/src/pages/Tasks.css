@@ -1,96 +1,145 @@
+body {
+  background-color: #000;
+}
+
 .mobile-container {
-    width: 375px; /* width to simulate mobile screen */
-    height: auto;
-    background-color: #01010f;
-    border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    margin: 50px auto; /* centers the container */
-    padding: 20px;
-  }
+  width: 375px; /* Width to simulate mobile screen */
+  height: auto;
+  background-color: #000;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  margin: 50px auto; /* Centers the container */
+  padding: 20px;
+  color: white;
+}
 
-  .scrolling-wrapper {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    scrollbar-width: none; /* For Firefox */
-  }
+.section-title {
+  color: #fff;
+  margin-bottom: 10px;
+}
 
-  .scrolling-wrapper::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
-  }
+.scrolling-wrapper {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  scrollbar-width: none; /* For Firefox */
+}
 
-  .earn-section {
-    background-color: #6e6e76;
-    padding: 15px;
-    border-radius: 10px;
-    margin-right: 10px;
-    min-width: 200px;
-    flex-shrink: 0;
-    text-align: left;
+.scrolling-wrapper::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+.earn-section {
+  background-color: #6e6e76;
+  padding: 15px;
+  border-radius: 10px;
+  margin-right: 10px;
+  min-width: 200px;
+  flex-shrink: 0;
+  text-align: left;
+  color: #fff;
+}
+
+.btn-custom {
+  width: 80px; /* Sets a custom width */
+  height: 30px; /* Sets a custom height */
+  padding: 5px 10px; /* Adjusts the space inside the button */
+  font-size: 14px; /* Customizes the font size */
+  border-radius: 5px; /* Optionally rounds the corners */
+  background-color: #fb7426; /* Sets a custom background color */
+  color: white; /* Text color */
+  border: none; /* Removes the default border */
+}
+
+.btn-custom:hover {
+  background-color: #ff7320;
+}
+
+.header {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.header-link {
+  color: white;
+  text-decoration: none;
+}
+
+.task-section,
+.weekly-section {
+  margin-top: 20px;
+}
+
+.task {
+  background-color: #6e6e76;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  color: white;
+}
+
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  background-color: #6e6e76;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.nav-item {
+  text-align: center;
+}
+
+.nav-item img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 5px;
+}
+
+.nav-item span {
+  display: block;
+  font-size: 12px;
+}
+
+/* Responsive styling for screens up to 430px */
+@media (max-width: 430px) {
+  .mobile-container {
+    width: 100%;
+    padding: 10px;
+    margin: 20px auto;
   }
 
   .btn-custom {
-    width: 100px; /* Sets a custom width */
-    height: 35px; /* Sets a custom height */
-    padding: 5px 10px; /* Adjusts the space inside the button */
-    font-size: 14px; /* Customizes the font size */
-    border-radius: 5px; /* Optionally rounds the corners */
-    background-color: #fb7426; /* Sets a custom background color */
-    color: white; /* Text color */
-    border: none; /* Removes the default border */
-  }
-  .btn-custom:hover {
-    background-color: #ff7320;
+    width: 70px;
+    height: 28px;
+    font-size: 12px;
   }
 
   .header {
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 10px;
+    font-size: 16px;
   }
 
-  .header-container {
-    display: flex;
-    justify-content: space-around; /* Places items on opposite ends */
-    align-items: center; /* Vertically centers the items */
-    width: 100%; /* Optional: set the width as needed */
-  }
-
-  .task {
-    background-color: #6e6e76;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center; /* Vertically centers items */
-    justify-content: space-between;
-    margin: 15px;
-  }
-  .task-info {
-    display: flex;
-    flex-direction: column; /* Stack text elements vertically */
-  }
-  .mobile-container::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
-  }
-  .bottom-nav {
-    display: flex;
-    justify-content: space-between;
-    background-color: #6e6e76;
+  .task,
+  .earn-section {
     padding: 10px;
-    border-radius: 10px;
   }
-  .nav-item {
-    text-align: center;
-  }
-  .nav-item img {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 5px;
-  }
-  .nav-item span {
-    display: block;
-    font-size: 12px;
-  }
+}

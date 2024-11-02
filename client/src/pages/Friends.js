@@ -1,27 +1,89 @@
-import React from "react";
-import './Friends.css'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./Friends.css";
+
 const Friends = () => {
+  const [referrals, setReferrals] = useState([]);
+  const [totalReferrals, setTotalReferrals] = useState(0);
+  const navigate = useNavigate();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const referralId = user?.referralId;
+  const shareLink = `http://localhost:3000/signup/${referralId}`;
+
+  const CONFIG_OBJ = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  };
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/authenticate");
+      return;
+    }
+
+    const fetchReferralData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3300/profile/referrals",
+          CONFIG_OBJ
+        );
+        setReferrals(response.data.referrals);
+        setTotalReferrals(response.data.totalReferrals);
+      } catch (error) {
+        console.error("Error fetching referral data:", error);
+        navigate("/authenticate");
+      }
+    };
+
+    fetchReferralData();
+  }, [user, navigate]);
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: "Join me on this platform!",
+          text: "Invite friends and earn rewards! Use my referral link to sign up.",
+          url: shareLink,
+        })
+        .then(() => console.log("Successful share"))
+        .catch((error) => console.error("Error sharing:", error));
+    } else {
+      alert("Sharing is not supported on this device.");
+    }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard
+      .writeText(shareLink)
+      .then(() => {
+        alert("Referral link copied to clipboard!");
+      })
+      .catch((error) => console.error("Error copying link:", error));
+  };
+
   return (
-    <div>
-      {/* Invitation Content */}
+    <div className="mobile">
       <div className="content">
-        <h3>Invite friends &#128107; and get rewards</h3>
+        <h3>Invite friends 🤝 and get rewards</h3>
         <p>Earn up to 50,000 points from your friends!</p>
       </div>
 
-      {/* Friends and Coins Information */}
       <div className="col">
         <div className="friends">
           <p>Friends invited</p>
-          <h3>&#128107; X 6</h3>
+          <h4>🤝 X {totalReferrals}</h4>
         </div>
         <div className="friends1">
           <p>Coins earned</p>
-          <h3>&#128176; X 12,151</h3>
+          <h4>💰 X {totalReferrals * 150}</h4>
         </div>
       </div>
 
-      {/* Earnings Information */}
       <div className="col2">
         <ul>
           <li>
@@ -36,54 +98,34 @@ const Friends = () => {
         </ul>
       </div>
 
-     {/* Friend's Name Table */}
-<table className="friend-table">
-  <thead>
-    <tr>
-      <th>No.</th>
-      <th>Friend's Name</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>Giridhar</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Manya Meghana</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>Naveen $X Kumar</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>Chaithu Sai</td>
-    </tr>
-    <tr>
-      <td>5</td>
-      <td>Sravesh Lucky</td>
-    </tr>
-    <tr>
-      <td>6</td>
-      <td>Pavan Sai</td>
-    </tr>
-  </tbody>
-</table>
-
-
-      {/* Display Notice */}
-      <div className="display">
-        <p>Displaying the most recent 300 records only</p>
+      <div className="name">
+        <h4>
+          <span className="span2">No.</span> Friend's name
+        </h4>
       </div>
 
-      {/* Buttons */}
+      <div className="ol">
+        <ol>
+          {referrals.map((referral, index) => (
+            <li key={index}>
+              <span className="span3">{index + 1}</span> {referral.username}
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="display">
+        <p>
+          Displaying the most recent {Math.min(referrals.length, 300)} records
+          only
+        </p>
+      </div>
+
       <div className="button">
         <div className="btn">
-          <button>Invite Friends!</button>
+          <button onClick={handleShare}>Invite Friends!</button>
         </div>
-        <div className="btn2">
+        <div className="btn2" onClick={handleCopyLink}>
           <h1>
             <i className="bx bxs-copy"></i>
           </h1>
