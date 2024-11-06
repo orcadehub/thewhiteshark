@@ -1,3 +1,4 @@
+// models/userModel.js
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -8,13 +9,14 @@ const userSchema = new mongoose.Schema({
   mobileNumber: { type: String, required: true, unique: true },
   walletAmount: { type: Number, default: 0.0 },
   totalReferrals: { type: Number, default: 0 },
-  referralId: { type: String, required: true }, // Unique referral ID for the user
+  referralId: { type: String, required: true }, // This user’s unique referral ID
   referredBy: { type: String, default: null }, // Stores referral ID of the referrer
-  chatId: { type: String, unique: true }, // Stores Telegram chat ID, if linked
   dateJoined: { type: Date, default: Date.now },
   isActive: { type: Boolean, default: true },
   profilePictureUrl: { type: String, default: null },
   lastLogin: { type: Date, default: null },
+  farmingStartTime: { type: Date, default: null },
+  farmingDuration: { type: Number, default: 30 * 1000 },
 });
 
 module.exports = mongoose.model("User", userSchema);

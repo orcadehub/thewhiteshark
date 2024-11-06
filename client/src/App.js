@@ -6,6 +6,7 @@ import Friends from "./pages/Friends";
 import Tasks from "./pages/Tasks";
 import AirDrop from "./pages/Airdrop";
 import Signup from "./pages/Signup";
+import AddTask from "./pages/AddTask";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Route exact path="/authenticate" element={<Signup />} />
           <Route
             exact
-            path="/authenticate/:referralid"
+            path="/signup/:referralid"
             element={<Signup />}
           />{" "}
           {/* Dynamic route for referral ID */}
@@ -25,6 +26,7 @@ function App() {
           <Route exact path="/friends" element={<Friends />} />
           <Route exact path="/tasks" element={<Tasks />} />
           <Route exact path="/airdrop" element={<AirDrop />} />
+          <Route exact path="/addtask" element={<AddTask />} />
         </Routes>
 
         <Header />

@@ -10,8 +10,8 @@ body {
 }
 
 .mobile {
-  width: 375px;
-  height: auto;
+  width: 400px;
+  height: 100vh;
   margin: 50px auto;
 }
 

@@ -7,6 +7,7 @@ const Leader = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [userRank, setUserRank] = useState(null);
   const [totalUsers, setTotalUsers] = useState(null);
+  const [userData, setUserData] = useState(null); // Store user's up-to-date data
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -25,13 +26,23 @@ const Leader = () => {
 
     const fetchLeaderboard = async () => {
       try {
-        const response = await axios.get(
+        // Fetch leaderboard data
+        const leaderboardResponse = await axios.get(
           "http://localhost:3300/leaderboard",
           CONFIG_OBJ
         );
-        setLeaderboard(response.data.leaderboard);
-        setUserRank(response.data.userRank);
-        setTotalUsers(response.data.totalUsers);
+
+        setLeaderboard(leaderboardResponse.data.leaderboard);
+        setUserRank(leaderboardResponse.data.userRank);
+        setTotalUsers(leaderboardResponse.data.totalUsers);
+
+        // Fetch up-to-date profile data
+        const profileResponse = await axios.get(
+          "http://localhost:3300/profile",
+          CONFIG_OBJ
+        );
+
+        setUserData(profileResponse.data.user); // Update user data with the latest info
       } catch (error) {
         console.error("Error fetching leaderboard data:", error);
         navigate("/authenticate");
@@ -60,8 +71,8 @@ const Leader = () => {
             <circle cx="8" cy="8" r="8" />
           </svg>
           <div className="pin" id="user">
-            <h4>{user?.username || "UserLead"}</h4>
-            <p>{user?.walletAmount || "0"} DOGS</p>
+            <h4>{userData?.username || "UserLead"}</h4>
+            <p>{userData?.walletAmount || "0"} COINS</p>
           </div>
         </div>
         <div className="end">
@@ -91,7 +102,7 @@ const Leader = () => {
             </div>
             <div className="user">
               <h5>{leader.username}</h5>
-              <p>{leader.walletAmount} DOGS</p>
+              <p>{leader.walletAmount} COINS</p>
             </div>
           </div>
           <div className="end">

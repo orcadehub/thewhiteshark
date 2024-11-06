@@ -5,81 +5,76 @@ import axios from "axios";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
-  const [isExistingUser, setIsExistingUser] = useState(false); // Track if user exists
-  const { chatid } = useParams(); // Capture chatId from URL
+  const [referralId, setReferralId] = useState("");
+  const { referralid } = useParams(); // Capture referral ID from the URL
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if user exists with given chatId
-    const checkUser = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3300/authenticate/${chatid}`
-        );
-        setIsExistingUser(response.data.exists);
-      } catch (error) {
-        console.error("Error checking user:", error);
-      }
-    };
+    if (referralid) {
+      setReferralId(referralid); // Set referral ID if provided in URL
+    }
+  }, [referralid]);
 
-    if (chatid) checkUser();
-  }, [chatid]);
-
-  const handleSignupOrLogin = async (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     Swal.fire({
-      title: isExistingUser ? "Logging In..." : "Signing Up...",
-      text: "Please wait while we process your request.",
+      title: "Signing Up...",
+      text: "Please wait while we create your account.",
       allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
+      didOpen: () => {
+        Swal.showLoading();
+      },
     });
 
     try {
-      const response = await axios.post(
-        `http://localhost:3300/authenticate/${chatid}`,
-        {
-          username,
-        }
-      );
+      const response = await axios.post("http://localhost:3300/authenticate", {
+        username,
+        referralId, // Include referral ID if available
+      });
 
+      // Store user data and token in localStorage
       localStorage.setItem("user", JSON.stringify(response.data.user));
       localStorage.setItem("token", response.data.token);
 
       await Swal.fire({
         icon: "success",
-        title: isExistingUser ? "Login Successful" : "Signup Successful",
-        text: `Welcome, ${response.data.user.username}!`,
+        title: "Signup Successful",
+        text: "Your account has been created!",
       });
 
-      navigate("/home");
+      navigate("/home"); // Redirect to home after successful signup
     } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An error occurred while signing up. Please try again.";
       Swal.fire({
         icon: "error",
-        title: isExistingUser ? "Login Failed" : "Signup Failed",
-        text:
-          error.response?.data?.message ||
-          "An error occurred. Please try again.",
+        title: "Signup Failed",
+        text: errorMessage,
       });
     }
   };
 
   return (
     <div style={styles.container}>
-      <form style={styles.form} onSubmit={handleSignupOrLogin}>
-        <h2 style={styles.heading}>{isExistingUser ? "Log In" : "Sign Up"}</h2>
-        {!isExistingUser && (
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={styles.input}
-          />
-        )}
+      <form style={styles.form} onSubmit={handleSignup}>
+        <h2 style={styles.heading}>Sign Up</h2>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={styles.input}
+        />
         <button type="submit" style={styles.button}>
-          {isExistingUser ? "Log In" : "Sign Up"}
+          Sign Up
         </button>
+        {referralId && (
+          <p style={styles.referralMessage}>
+            Signing up with referral ID: <strong>{referralId}</strong>
+          </p>
+        )}
       </form>
     </div>
   );
@@ -122,6 +117,12 @@ const styles = {
     color: "#fff",
     fontSize: "16px",
     cursor: "pointer",
+  },
+  referralMessage: {
+    marginTop: "15px",
+    fontSize: "14px",
+    color: "#ffae42",
+    textAlign: "center",
   },
 };
 

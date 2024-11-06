@@ -33,43 +33,25 @@ function generateReferralId(length) {
 }
 
 // Combined Signup/Login route
-router.post("/authenticate/:chatid", async (req, res) => {
+router.post("/authenticate", async (req, res) => {
   const { username, referralId } = req.body;
-  const { chatid } = req.params;
+
+  // Check if username is provided
+  if (!username) {
+    return res.status(400).json({ message: "Username is required." });
+  }
 
   try {
-    // Check if user with given chatId already exists
-    let user = await User.findOne({ chatId: chatid });
+    // Check if a user with the given username already exists
+    let user = await User.findOne({ username });
 
-    if (user) {
-      // User exists, proceed with login
-      user.lastLogin = new Date();
-      await user.save();
-
-      // Generate JWT token
-      const token = jwt.sign(
-        { userId: user._id, username: user.username },
-        JWT_SECRET,
-        { expiresIn: "1h" }
-      );
-
-      return res.status(200).json({
-        message: "User logged in successfully",
-        user,
-        token,
-      });
-    } else {
-      // New user, proceed with signup
-      if (!username) {
-        return res
-          .status(400)
-          .json({ message: "Username is required for signup." });
-      }
-
-      // Validate referral ID if provided
+    if (!user) {
+      // User does not exist, so create a new user (signup)
+      // If referral ID is provided, validate it
       if (referralId) {
         const referrer = await User.findOne({ referralId });
         if (referrer) {
+          // Increment the totalReferrals for the user associated with the referral ID
           referrer.totalReferrals += 1;
           await referrer.save();
         } else {
@@ -77,35 +59,38 @@ router.post("/authenticate/:chatid", async (req, res) => {
         }
       }
 
-      // Generate unique referral ID for the new user
+      // Generate a unique referral ID for the new user
       const newReferralId = await generateUniqueReferralId();
 
       // Create the new user
       user = new User({
         username,
-        referralId: newReferralId,
-        chatId: chatid,
-        fullName: "", // Placeholder, update as needed
-        password: "", // Placeholder, update as needed
-        email: "", // Placeholder, update as needed
-        mobileNumber: "", // Placeholder, update as needed
+        referralId: newReferralId, // Store unique referral ID for the new user
       });
-
       await user.save();
 
-      // Generate JWT token for the new user
-      const token = jwt.sign(
-        { userId: user._id, username: user.username },
-        JWT_SECRET,
-        { expiresIn: "1h" }
-      );
-
+      // Send a response indicating successful signup
       res.status(201).json({
         message: "User signed up successfully",
         user,
-        token,
       });
     }
+
+    // Generate JWT token for the user (for both new and existing users)
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      JWT_SECRET,
+      { expiresIn: "1h" } // Token expires in 1 hour
+    );
+
+    // Return user data and token
+    res.status(200).json({
+      message: user
+        ? "User logged in successfully"
+        : "User signed up successfully",
+      user,
+      token,
+    });
   } catch (error) {
     console.error("Error during authentication:", error);
     res

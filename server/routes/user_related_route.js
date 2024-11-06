@@ -40,8 +40,7 @@ router.get("/profile/referrals", authenticateToken, async (req, res) => {
   }
 });
 
-
-// LeaderBoard
+// Leader
 router.get("/leaderboard", authenticateToken, async (req, res) => {
   try {
     const userId = req.user._id;
@@ -71,6 +70,38 @@ router.get("/leaderboard", authenticateToken, async (req, res) => {
     res
       .status(500)
       .json({ message: "An error occurred. Please try again later." });
+  }
+});
+
+// Farming start API
+router.post("/start-farming", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    await User.findByIdAndUpdate(userId, { farmingStartTime: new Date() });
+    res.status(200).json({ message: "Farming started" });
+  } catch (error) {
+    res.status(500).json({ message: "Error starting farming session" });
+  }
+});
+
+// Backend claim-coins route
+router.post("/claim-coins", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const coinsToAdd = req.body.coinsToAdd;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $inc: { walletAmount: coinsToAdd },
+        farmingStartTime: null, // Reset farming start time
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Coins claimed successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Error claiming coins" });
   }
 });
 
