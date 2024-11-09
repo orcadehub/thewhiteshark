@@ -104,14 +104,27 @@ const Profile = () => {
           <h2 style={styles.name}>{profileData?.username || "User Name"}</h2>
           <p style={styles.userId}>ID: {profileData?.referralId || "N/A"}</p>
         </div>
-        <div style={styles.balanceBox}>
+
+        <div style={styles.taskButtons}>
+          <button
+            style={styles.taskButton}
+            onClick={() => navigate("/addtask")}
+          >
+            Add Task
+          </button>
+          <button style={styles.taskButton} onClick={() => navigate("/tasks")}>
+            Delete Task
+          </button>
+        </div>
+
+        {/* <div style={styles.balanceBox}>
           <h3 style={styles.balanceTitle}>Coin Balance</h3>
           <p style={styles.balanceAmount}>
             ${profileData?.walletAmount || "0.00"}
           </p>
-        </div>
+        </div> */}
       </div>
-      <div style={styles.box3}>
+      {/* <div style={styles.box3}>
         <video width="100%" height="auto" autoPlay loop muted>
           <source src="path/to/animated-video.mp4" type="video/mp4" />
           Your browser does not support the video tag.
@@ -137,7 +150,7 @@ const Profile = () => {
             Claim Coins
           </button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -189,6 +202,21 @@ const styles = {
     fontSize: "24px",
     color: "#fff",
     fontWeight: "bold",
+  },
+  taskButtons: {
+    marginBottom: "10px",
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  taskButton: {
+    backgroundColor: "#CC6600",
+    color: "#fff",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    flex: 1,
+    margin: "5px 2px",
   },
   box3: {
     backgroundColor: "#222",

@@ -17,6 +17,17 @@ const userSchema = new mongoose.Schema({
   lastLogin: { type: Date, default: null },
   farmingStartTime: { type: Date, default: null },
   farmingDuration: { type: Number, default: 30 * 1000 },
+  completedTasks: [
+    {
+      taskId: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
+      status: { type: String, enum: ["start", "complete"], default: "start" },
+    },
+  ],
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

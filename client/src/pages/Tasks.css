@@ -52,6 +52,29 @@ body {
   border: none; /* Removes the default border */
 }
 
+.del-btn{
+  width: 80px;
+    /* Sets a custom width */
+    height: 30px;
+    /* Sets a custom height */
+    padding: 5px 10px;
+    /* Adjusts the space inside the button */
+    font-size: 14px;
+    /* Customizes the font size */
+    border-radius: 5px;
+    /* Optionally rounds the corners */
+    background-color:rgb(235, 44, 44);
+    /* Sets a custom background color */
+    color: white;
+    /* Text color */
+    border: none;
+    margin-right: 10px;
+}
+
+.del-btn:hover {
+  background-color: rgb(235, 44, 44);
+}
+
 .btn-custom:hover {
   background-color: #ff7320;
 }
