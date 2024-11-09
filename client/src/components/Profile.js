@@ -104,53 +104,62 @@ const Profile = () => {
           <h2 style={styles.name}>{profileData?.username || "User Name"}</h2>
           <p style={styles.userId}>ID: {profileData?.referralId || "N/A"}</p>
         </div>
-
-        <div style={styles.taskButtons}>
-          <button
-            style={styles.taskButton}
-            onClick={() => navigate("/addtask")}
-          >
-            Add Task
-          </button>
-          <button style={styles.taskButton} onClick={() => navigate("/tasks")}>
-            Delete Task
-          </button>
-        </div>
-
-        {/* <div style={styles.balanceBox}>
-          <h3 style={styles.balanceTitle}>Coin Balance</h3>
-          <p style={styles.balanceAmount}>
-            ${profileData?.walletAmount || "0.00"}
-          </p>
-        </div> */}
+        {profileData?.role === "admin" && (
+          <div style={styles.taskButtons}>
+            <button
+              style={styles.taskButton}
+              onClick={() => navigate("/addtask")}
+            >
+              Add Task
+            </button>
+            <button
+              style={styles.taskButton}
+              onClick={() => navigate("/tasks")}
+            >
+              Delete Task
+            </button>
+          </div>
+        )}
+        {profileData?.role === "user" && (
+          <div style={styles.balanceBox}>
+            <h3 style={styles.balanceTitle}>Coin Balance</h3>
+            <p style={styles.balanceAmount}>
+              ${profileData?.walletAmount || "0.00"}
+            </p>
+          </div>
+        )}
       </div>
-      {/* <div style={styles.box3}>
-        <video width="100%" height="auto" autoPlay loop muted>
-          <source src="path/to/animated-video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      <div style={styles.box4}>
-        <div
-          style={{ ...styles.progressBar, width: `${progressPercentage}%` }}
-        ></div>
-        {!isFarming && !claimAvailable && (
-          <button style={styles.startButton} onClick={startFarming}>
-            Start Farming
-          </button>
-        )}
-        {isFarming && (
-          <p style={styles.timer}>
-            {Math.floor(timer / 3600)}h {Math.floor((timer % 3600) / 60)}m{" "}
-            {timer % 60}s
-          </p>
-        )}
-        {claimAvailable && (
-          <button style={styles.claimButton} onClick={claimCoins}>
-            Claim Coins
-          </button>
-        )}
-      </div> */}
+      {profileData?.role === "user" && (
+        <>
+          <div style={styles.box3}>
+            <video width="100%" height="auto" autoPlay loop muted>
+              <source src="path/to/animated-video.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div style={styles.box4}>
+            <div
+              style={{ ...styles.progressBar, width: `${progressPercentage}%` }}
+            ></div>
+            {!isFarming && !claimAvailable && (
+              <button style={styles.startButton} onClick={startFarming}>
+                Start Farming
+              </button>
+            )}
+            {isFarming && (
+              <p style={styles.timer}>
+                {Math.floor(timer / 3600)}h {Math.floor((timer % 3600) / 60)}m{" "}
+                {timer % 60}s
+              </p>
+            )}
+            {claimAvailable && (
+              <button style={styles.claimButton} onClick={claimCoins}>
+                Claim Coins
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
