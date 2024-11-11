@@ -102,3 +102,5 @@ app.listen(port, async() => {
   console.log(`Express server is listening on port ${port}`);
   await setWebhook();
 });
+
+module.exports = app;
