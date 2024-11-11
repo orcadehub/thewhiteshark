@@ -1,5 +1,5 @@
-const token = "7600493808:AAGVYoJVAVZlMhrLKgeyHZQGq0uaqrqyroA";
-const url = "https://thewhiteshark.vercel.app"; // Your Vercel deployment URL
+// const token = "7600493808:AAGVYoJVAVZlMhrLKgeyHZQGq0uaqrqyroA";
+// const url = "https://thewhiteshark.vercel.app"; // Your Vercel deployment URL
 
 const axios = require("axios");
 const { Telegraf } = require("telegraf");
@@ -79,7 +79,7 @@ try {
 }
 
 
-// Set the webhook
+//Set the webhook
 const setWebhook = async () => {
   const webhookUrl = "https://thewhiteshark.vercel.app/webhook"; // Replace with your URL
   const url = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${webhookUrl}`;
@@ -92,12 +92,13 @@ const setWebhook = async () => {
   }
 };
 
+setWebhook();
+
 
 app.get("/", (req, res) => {
   res.send("It is Working");
 });
 
-setWebhook();
 // Start Express Server
 // app.listen(port, async() => {
 //   console.log(`Express server is listening on port ${port}`);
