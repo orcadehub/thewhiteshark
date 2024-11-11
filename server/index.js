@@ -97,10 +97,11 @@ app.get("/", (req, res) => {
   res.send("It is Working");
 });
 
+setWebhook();
 // Start Express Server
-app.listen(port, async() => {
-  console.log(`Express server is listening on port ${port}`);
-  await setWebhook();
-});
+// app.listen(port, async() => {
+//   console.log(`Express server is listening on port ${port}`);
+//   await setWebhook();
+// });
 
 module.exports = app;
