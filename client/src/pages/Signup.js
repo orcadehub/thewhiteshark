@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
+import config from "../config";
+
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -9,6 +11,11 @@ const Signup = () => {
   const { referralid } = useParams(); // Capture referral ID from the URL
   const navigate = useNavigate();
 
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+  
   useEffect(() => {
     if (referralid) {
       setReferralId(referralid); // Set referral ID if provided in URL
@@ -28,7 +35,7 @@ const Signup = () => {
     });
 
     try {
-      const response = await axios.post("http://localhost:3300/authenticate", {
+      const response = await axios.post(`${baseURL}authenticate`, {
         username,
         referralId, // Include referral ID if available
       });

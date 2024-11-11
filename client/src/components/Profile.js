@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import config from "../config";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState(null);
@@ -9,6 +10,11 @@ const Profile = () => {
   const [isFarming, setIsFarming] = useState(false);
   const [claimAvailable, setClaimAvailable] = useState(false);
   const navigate = useNavigate();
+
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
 
   const CONFIG_OBJ = {
     headers: {
@@ -21,7 +27,7 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3300/profile",
+          `${baseURL}profile`,
           CONFIG_OBJ
         );
         const user = response.data.user;
@@ -50,7 +56,7 @@ const Profile = () => {
     };
 
     fetchProfileData();
-  }, [navigate]);
+  }, [navigate, baseURL]);
 
   useEffect(() => {
     let interval;
@@ -68,7 +74,7 @@ const Profile = () => {
 
   const startFarming = async () => {
     try {
-      await axios.post("http://localhost:3300/start-farming", {}, CONFIG_OBJ);
+      await axios.post(`${baseURL}start-farming`, {}, CONFIG_OBJ);
       setIsFarming(true);
       setTimer(30); // Reset timer to 30 seconds for testing
       setClaimAvailable(false);
@@ -80,7 +86,7 @@ const Profile = () => {
   const claimCoins = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3300/claim-coins",
+        `${baseURL}claim-coins`,
         { coinsToAdd: 100 },
         CONFIG_OBJ
       );

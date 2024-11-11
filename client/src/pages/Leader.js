@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Leader.css";
+import config from "../config";
 
 const Leader = () => {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -18,6 +19,11 @@ const Leader = () => {
     },
   };
 
+   const baseURL =
+     process.env.NODE_ENV === "development"
+       ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+  
   useEffect(() => {
     if (!user) {
       navigate("/authenticate");
@@ -28,7 +34,7 @@ const Leader = () => {
       try {
         // Fetch leaderboard data
         const leaderboardResponse = await axios.get(
-          "http://localhost:3300/leaderboard",
+          `${baseURL}leaderboard`,
           CONFIG_OBJ
         );
 
@@ -38,7 +44,7 @@ const Leader = () => {
 
         // Fetch up-to-date profile data
         const profileResponse = await axios.get(
-          "http://localhost:3300/profile",
+          `${baseURL}profile`,
           CONFIG_OBJ
         );
 
@@ -50,7 +56,7 @@ const Leader = () => {
     };
 
     fetchLeaderboard();
-  }, [user, navigate]);
+  }, [user, navigate, baseURL]);
 
   return (
     <div className="whole">

@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "./AddTask.css";
 import { useNavigate } from "react-router-dom";
+import config from "../config";
 
 const AddTask = () => {
   const [taskName, setTaskName] = useState("");
@@ -15,6 +16,11 @@ const AddTask = () => {
    const [isSocialMediaRequired, setIsSocialMediaRequired] = useState(false);
   const navigate = useNavigate();
 
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+  
   // Function to check if the user is an admin based on the JWT token
   const checkAdminStatus = () => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -72,7 +78,7 @@ const AddTask = () => {
 
     try {
       await axios.post(
-        "http://localhost:3300/tasks",
+        `${baseURL}tasks`,
         {
           taskName,
           points,

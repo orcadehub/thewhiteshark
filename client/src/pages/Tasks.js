@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Tasks.css";
 import Swal from "sweetalert2";
+import config from "../config";
 
 const Tasks = () => {
   const navigate = useNavigate();
@@ -12,6 +13,11 @@ const Tasks = () => {
   const [tasks, setTasks] = useState([]);
   const [userData, setUserData] = useState(user);
 
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+  
   const CONFIG_OBJ = {
     headers: {
       "Content-Type": "application/json",
@@ -27,10 +33,7 @@ const Tasks = () => {
 
     const fetchTasks = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3300/tasks",
-          CONFIG_OBJ
-        );
+        const response = await axios.get(`${baseURL}tasks`, CONFIG_OBJ);
         const tasksWithCompletion = response.data.map((task) => {
           const userCompletedTask = userData.completedTasks.find(
             (userTask) => userTask.taskId === task._id
@@ -48,11 +51,11 @@ const Tasks = () => {
         console.error("Error fetching tasks:", error);
       }
     };
-
+ 
     const fetchProfileData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3300/profile",
+          `${baseURL}profile`,
           CONFIG_OBJ
         );
         setTotalReferrals(response.data.user.totalReferrals);
@@ -63,7 +66,7 @@ const Tasks = () => {
 
     fetchTasks();
     fetchProfileData();
-  }, [navigate, user, userData]);
+  }, [navigate, user, userData, baseURL]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
@@ -78,7 +81,7 @@ const handleTaskStart = async (taskId, points, socialMediaLink, visitCount) => {
     try {
       // Send updated visitCount to backend
       const response = await axios.put(
-        `http://localhost:3300/task/${taskId}/open`,
+        `${baseURL}task/${taskId}/open`,
         { visitCount }, // Pass visitCount in the request body
         CONFIG_OBJ
       );
@@ -132,7 +135,7 @@ const handleTaskStart = async (taskId, points, socialMediaLink, visitCount) => {
       }
 
       const response = await axios.put(
-        `http://localhost:3300/task/${taskId}/open`,
+        `${baseURL}task/${taskId}/open`,
         {}, // No visitCount needed here
         CONFIG_OBJ
       );
@@ -179,10 +182,7 @@ const handleTaskStart = async (taskId, points, socialMediaLink, visitCount) => {
       });
 
       if (result.isConfirmed) {
-        const response = await axios.delete(
-          `http://localhost:3300/task/${taskId}`,
-          CONFIG_OBJ
-        );
+        const response = await axios.delete(`${baseURL}${taskId}`, CONFIG_OBJ);
 
         Swal.fire({
           icon: "success",

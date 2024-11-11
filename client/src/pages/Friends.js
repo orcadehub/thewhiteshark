@@ -2,15 +2,22 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Friends.css";
+import config from "../config";
+
 
 const Friends = () => {
   const [referrals, setReferrals] = useState([]);
   const [totalReferrals, setTotalReferrals] = useState(0);
   const navigate = useNavigate();
 
+  const baseURL =
+    process.env.NODE_ENV === "development"
+      ? config.LOCAL_BASE_URL
+      : config.BASE_URL;
+  
   const user = JSON.parse(localStorage.getItem("user"));
   const referralId = user?.referralId;
-  const shareLink = `http://localhost:3000/signup/${referralId}`;
+  const shareLink = `${baseURL}signup/${referralId}`;
 
   const CONFIG_OBJ = {
     headers: {
@@ -28,7 +35,7 @@ const Friends = () => {
     const fetchReferralData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3300/profile/referrals",
+          `${baseURL}profile/referrals`,
           CONFIG_OBJ
         );
         setReferrals(response.data.referrals);
@@ -40,7 +47,7 @@ const Friends = () => {
     };
 
     fetchReferralData();
-  }, [user, navigate]);
+  }, [user, navigate, baseURL]);
 
   const handleShare = () => {
     if (navigator.share) {
