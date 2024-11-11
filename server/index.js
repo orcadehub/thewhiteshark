@@ -41,17 +41,6 @@ app.use(require("./routes/task_route"));
 // Initialize the Telegram bot using the token from environment variable
 const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 
-app.post("/webhook", (req, res) => {
-  try {
-    bot.handleUpdate(req.body);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error("Error handling webhook:", error.message);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-
 // Define a simple bot command, e.g., /start
 bot.start((ctx) => {
   const chatId = ctx.chat.id; // Accessing the chat ID from context
@@ -69,36 +58,54 @@ bot.start((ctx) => {
   });
 });
 
+app.post("/webhook", (req, res) => {
+  try {
+    bot.handleUpdate(req.body);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error handling webhook:", error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 
 // Start the bot
-try {
-  bot.launch();
-  console.log("Telegram bot launched successfully.");
-} catch (error) {
-  console.error("Error launching Telegram bot:", error.message);
-}
+// try {
+//   bot.launch();
+//   console.log("Telegram bot launched successfully.");
+// } catch (error) {
+//   console.error("Error launching Telegram bot:", error.message);
+// }
 
 
 //Set the webhook
 const setWebhook = async () => {
-  const webhookUrl = "https://thewhiteshark.vercel.app/webhook"; // Replace with your URL
-  const url = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${webhookUrl}`;
+  const removeWebhookUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/deleteWebhook`;
 
   try {
-    const response = await axios.get(url);
-    console.log('Webhook set:', response.data);
+    await axios.get(removeWebhookUrl);
+    console.log("Old webhook removed");
   } catch (error) {
-    console.error('Error setting webhook:', error);
+    console.error("Error removing webhook:", error.message);
+  }
+
+  // Now set the new webhook
+  const webhookUrl = "https://thewhiteshark.vercel.app/webhook"; // Replace with your URL
+  const setWebhookUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${webhookUrl}`;
+
+  try {
+    const response = await axios.get(setWebhookUrl);
+    console.log("Webhook set:", response.data);
+  } catch (error) {
+    console.error("Error setting webhook:", error.message);
   }
 };
 
 setWebhook();
 
-
 app.get("/", (req, res) => {
   res.send("It is Working");
 });
-
 // Start Express Server
 app.listen(port, () => {
   console.log(`Express server is listening on port ${port}`);
