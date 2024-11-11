@@ -100,9 +100,8 @@ app.get("/", (req, res) => {
 });
 
 // Start Express Server
-// app.listen(port, async() => {
-//   console.log(`Express server is listening on port ${port}`);
-//   await setWebhook();
-// });
+app.listen(port, async() => {
+  console.log(`Express server is listening on port ${port}`);
+});
 
 module.exports = app;
