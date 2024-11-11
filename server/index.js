@@ -80,19 +80,19 @@ try {
 
 
 //Set the webhook
-const setWebhook = async () => {
-  const webhookUrl = "https://thewhiteshark.vercel.app/webhook"; // Replace with your URL
-  const url = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${webhookUrl}`;
+// const setWebhook = async () => {
+//   const webhookUrl = "https://thewhiteshark.vercel.app/webhook"; // Replace with your URL
+//   const url = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${webhookUrl}`;
 
-  try {
-    const response = await axios.get(url);
-    console.log('Webhook set:', response.data);
-  } catch (error) {
-    console.error('Error setting webhook:', error);
-  }
-};
+//   try {
+//     const response = await axios.get(url);
+//     console.log('Webhook set:', response.data);
+//   } catch (error) {
+//     console.error('Error setting webhook:', error);
+//   }
+// };
 
-setWebhook();
+// setWebhook();
 
 
 app.get("/", (req, res) => {
