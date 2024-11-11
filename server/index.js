@@ -1,6 +1,5 @@
 const token = "7600493808:AAGVYoJVAVZlMhrLKgeyHZQGq0uaqrqyroA";
 const url = "https://thewhiteshark.vercel.app"; // Your Vercel deployment URL
-const port = process.env.PORT || 3300;
 
 const axios = require("axios");
 const { Telegraf } = require("telegraf");
@@ -13,6 +12,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
+const port = process.env.PORT || 3300;
 
 // Enable CORS with default options
 app.use(cors());
@@ -22,7 +22,7 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose
-  .connect("mongodb://127.0.0.1:27017/TheWhiteSharkDB", {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -82,7 +82,7 @@ try {
 // Set the webhook
 const setWebhook = async () => {
   const webhookUrl = "https://thewhiteshark.vercel.app/webhook"; // Replace with your URL
-  const url = `https://api.telegram.org/bot${token}/setWebhook?url=${webhookUrl}`;
+  const url = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${webhookUrl}`;
 
   try {
     const response = await axios.get(url);
