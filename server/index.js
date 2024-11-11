@@ -70,12 +70,12 @@ app.post("/webhook", (req, res) => {
 
 
 // Start the bot
-// try {
-//   bot.launch();
-//   console.log("Telegram bot launched successfully.");
-// } catch (error) {
-//   console.error("Error launching Telegram bot:", error.message);
-// }
+try {
+  bot.launch();
+  console.log("Telegram bot launched successfully.");
+} catch (error) {
+  console.error("Error launching Telegram bot:", error.message);
+}
 
 
 //Set the webhook
