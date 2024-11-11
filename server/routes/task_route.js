@@ -24,38 +24,17 @@ router.post("/tasks",authenticateToken, checkAdminRole, async (req, res) => {
     taskName,
     points,
     category,
-    friends,
     socialMediaPlatform,
     socialMediaLink,
   } = req.body;
 
   try {
-    if (category === "Earn") {
-      if (
-        !socialMediaPlatform ||
-        !["Instagram", "Facebook", "LinkedIn", "YouTube", "Twitter"].includes(
-          socialMediaPlatform
-        )
-      ) {
-        return res.status(400).json({
-          message:
-            "Social media platform is required and must be one of Instagram, Facebook, LinkedIn, YouTube or Twitter.",
-        });
-      }
-
-      if (!socialMediaLink) {
-        return res
-          .status(400)
-          .json({ message: "Social media link is required for Earn tasks." });
-      }
-    }
     const newTask = new Task({
       taskName,
       points,
       category,
-      friends: category === "Friends" ? friends : 0, // Set friends if category is "Friends"
-      socialMediaPlatform: category === "Earn" ? socialMediaPlatform : null,
-      socialMediaLink: category === "Earn" ? socialMediaLink : null,
+      socialMediaPlatform,
+      socialMediaLink,
     });
 
     await newTask.save();
@@ -119,46 +98,163 @@ router.put("/task/:id/start", authenticateToken, async (req, res) => {
 });
 
 
-// Route to update task open count
-router.put("/task/:id/open", authenticateToken, async (req, res) => {
-  try {
-    const taskId = req.params.id;
-    const userId = req.user.id;
+// Handle claiming points for a task
+router.put('/task/:taskId/claim',authenticateToken, async (req, res) => {
+  const taskId = req.params.taskId;
+  const userId = req.user.id;  // Assume user is authenticated and `req.user.id` contains the user ID
 
-    // Find the user and the task
-    // const user = await User.findById(userId);
+  try {
+    // Find the task that the user wants to claim
     const task = await Task.findById(taskId);
     if (!task) {
-      return res.status(404).json({ message: "Task not found." });
+      return res.status(404).json({ message: 'Task not found' });
     }
 
-    task.opensCount += 1;
-    await task.save();
+    // Find the user who is claiming the task
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-    if (task.opensCount === 2 && task.taskCompletion !== "complete") {
-      const user = await User.findById(userId);
-      if (!user) return res.status(404).json({ message: "User not found." });
+    // Check if the user has already completed the task
+    const taskCompletion = user.completedTasks.find(
+      (completedTask) => completedTask.taskId.toString() === taskId
+    );
 
-      user.walletAmount += task.points;
-      await user.save();
+    if (!taskCompletion) {
+      return res.status(400).json({ message: 'You have not completed this task' });
+    }
 
-      task.taskCompletion = "complete";
-      await task.save();
+    if (taskCompletion.status === 'claimed') {
+      return res.status(400).json({ message: 'Points for this task have already been claimed' });
+    }
 
-      return res.status(200).json({
-        message: `Task completed! Points added to your wallet. You earned ${task.points} BP.`,
-        task,
-        user: { id: user._id, walletAmount: user.walletAmount },
+    // Add points to the user's wallet
+    user.walletAmount += task.points;
+
+    // Mark the task as "claimed"
+    const updatedCompletedTasks = user.completedTasks.map((completedTask) =>
+      completedTask.taskId.toString() === taskId
+        ? { ...completedTask, status: 'claimed' }
+        : completedTask
+    );
+
+    // Save the updated user and task completion status
+    user.completedTasks = updatedCompletedTasks;
+    await user.save();
+
+    // Return success message
+    res.status(200).json({
+      message: 'Points claimed successfully!',
+      task: {
+        id: taskId,
+        points: task.points,
+      },
+      walletAmount: user.walletAmount,
+    });
+  } catch (error) {
+    console.error('Error claiming points:', error);
+    res.status(500).json({ message: 'Something went wrong! Please try again later.' });
+  }
+});
+router.put("/task/:taskId/open", authenticateToken, async (req, res) => {
+  const { taskId } = req.params;
+  const userId = req.user.id; // authenticated user
+  const { visitCount } = req.body; // Get visitCount from request body
+
+  try {
+    const task = await Task.findById(taskId);
+    const user = await User.findById(userId);
+
+    if (!task || !user) {
+      return res.status(404).json({ message: "Task or user not found" });
+    }
+
+    // If task has been completed, prevent further changes
+    if (task.taskCompletion === "complete") {
+      return res.status(400).json({
+        message:
+          "This task has already been completed. Points have been awarded.",
       });
     }
-      res
-        .status(200)
-        .json({ message: `Task opened ${task.opensCount} time(s).`, task });
+
+    // If the task has a social media link, increment visitCount
+    if (task.socialMediaLink) {
+      task.visitCount = visitCount; // Update visitCount based on the request
+
+      // If visitCount is 2 or more, mark task as completed
+      if (task.visitCount >= 2) {
+        task.taskCompletion = "complete";
+        user.walletAmount += task.points; // Add points to wallet
+
+        const userTask = user.completedTasks.find(
+          (t) => t.taskId.toString() === taskId
+        );
+
+        if (!userTask) {
+          user.completedTasks.push({
+            taskId: task._id,
+            status: "complete",
+          });
+        } else {
+          userTask.status = "complete"; // Update task completion status
+        }
+
+        await user.save(); // Save updated user
+        await task.save(); // Save task completion
+
+        return res.status(200).json({
+          message: `Task completed! You earned ${task.points} BP.`,
+          task,
+          user: { id: user._id, walletAmount: user.walletAmount },
+        });
+      }
+
+      await task.save(); // Save updated task with increased visit count
+      return res.status(200).json({
+        message: `Task opened ${task.visitCount} time(s). Keep going!`,
+        task,
+      });
+    } else {
+      // Non-social media tasks: complete after first visit
+      if (task.taskCompletion === "start") {
+        task.taskCompletion = "complete";
+        user.walletAmount += task.points; // Add points to wallet
+
+        const userTask = user.completedTasks.find(
+          (t) => t.taskId.toString() === taskId
+        );
+
+        if (!userTask) {
+          user.completedTasks.push({
+            taskId: task._id,
+            status: "complete",
+          });
+        } else {
+          userTask.status = "complete"; // Update task completion status
+        }
+
+        await user.save(); // Save updated user
+        await task.save(); // Mark task as completed
+
+        return res.status(200).json({
+          message: `Task completed! You earned ${task.points} BP.`,
+          task,
+          user: { id: user._id, walletAmount: user.walletAmount },
+        });
+      }
+
+      return res.status(200).json({
+        message: "Task already completed.",
+        task,
+      });
+    }
   } catch (error) {
-    console.error("Error opening task:", error);
+    console.error("Error handling task open:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 
 // Route to delete a task (admin only)
 router.delete("/task/:id", authenticateToken, checkAdminRole, async (req, res) => {
@@ -177,6 +273,5 @@ router.delete("/task/:id", authenticateToken, checkAdminRole, async (req, res) =
     res.status(500).json({ message: "Error deleting task." });
   }
 });
-
 
 module.exports = router;

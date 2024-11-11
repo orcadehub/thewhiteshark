@@ -108,7 +108,7 @@ const Friends = () => {
         <ol>
           {referrals.map((referral, index) => (
             <li key={index}>
-              <span className="span3">{index + 1}</span> {referral.username}
+              <span className="span3"></span> {referral.username}
             </li>
           ))}
         </ol>

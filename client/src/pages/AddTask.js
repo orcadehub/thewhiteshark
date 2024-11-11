@@ -8,10 +8,11 @@ const AddTask = () => {
   const [taskName, setTaskName] = useState("");
   const [points, setPoints] = useState("");
   const [category, setCategory] = useState("");
-  const [friends, setFriends] = useState(0);
+  // const [friends, setFriends] = useState(0);
   const [socialMediaPlatform, setSocialMediaPlatform] = useState("");
   const [socialMediaLink, setSocialMediaLink] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
+   const [isSocialMediaRequired, setIsSocialMediaRequired] = useState(false);
   const navigate = useNavigate();
 
   // Function to check if the user is an admin based on the JWT token
@@ -43,22 +44,27 @@ const AddTask = () => {
   const handleAddTask = async (e) => {
     e.preventDefault();
 
-    // Validate social media platform for "Earn" category
-    if (category === "Earn" && !socialMediaPlatform) {
+    // Validate social media platform for "Available" category if it's required
+    if (
+      category === "Available" &&
+      isSocialMediaRequired &&
+      !socialMediaPlatform
+    ) {
       Swal.fire({
         icon: "error",
         title: "Validation Error",
-        text: "Please select a social media platform for Earn tasks.",
+        text: "Please select a social media platform for Available tasks.",
         confirmButtonColor: "#FFA500",
       });
       return;
     }
-    // Ensure social media link is filled for "Earn" tasks
-    if (category === "Earn" && !socialMediaLink) {
+
+    // Ensure social media link is filled for "Available" tasks if required
+    if (category === "Available" && isSocialMediaRequired && !socialMediaLink) {
       Swal.fire({
         icon: "error",
         title: "Validation Error",
-        text: "Please provide a link to the social media platform for Earn tasks.",
+        text: "Please provide a link to the social media platform for Available tasks.",
         confirmButtonColor: "#FFA500",
       });
       return;
@@ -71,9 +77,10 @@ const AddTask = () => {
           taskName,
           points,
           category,
-          friends: category === "Friends" ? friends : 0,
-          socialMediaPlatform: category === "Earn" ? socialMediaPlatform : null,
-          socialMediaLink: category === "Earn" ? socialMediaLink : null,
+          socialMediaPlatform: isSocialMediaRequired
+            ? socialMediaPlatform
+            : null,
+          socialMediaLink: isSocialMediaRequired ? socialMediaLink : null,
         },
         {
           headers: {
@@ -96,7 +103,7 @@ const AddTask = () => {
       setCategory("");
       setSocialMediaPlatform("");
       setSocialMediaLink("");
-      setFriends(0);
+      setIsSocialMediaRequired(false); // Reset the social media requirement state
     } catch (error) {
       console.error("Error adding task:", error);
 
@@ -137,22 +144,25 @@ const AddTask = () => {
           required
         >
           <option value="">Select Category</option>
-          <option value="Earn">Earn</option>
-          <option value="Weekly">Weekly</option>
-          <option value="New">New</option>
-          <option value="OnChain">OnChain</option>
-          <option value="Friends">Friends</option>
+          <option value="Available">Available</option>
+          <option value="Advanced">Advanced</option>
         </select>
-        {category === "Friends" && (
-          <input
-            type="number"
-            placeholder="Number of Friends"
-            value={friends}
-            onChange={(e) => setFriends(e.target.value)}
-            className="task-input"
-          />
+        {category === "Available" && (
+          <div className="social-media-option">
+            <label>
+              <input
+                type="checkbox" className="me-2"
+                checked={isSocialMediaRequired}
+                onChange={() =>
+                  setIsSocialMediaRequired(!isSocialMediaRequired)
+                }
+              />
+              Add Social Media Link
+            </label>
+          </div>
         )}
-        {category === "Earn" && (
+
+        {isSocialMediaRequired && category === "Available" && (
           <>
             <select
               value={socialMediaPlatform}
@@ -178,6 +188,7 @@ const AddTask = () => {
             />
           </>
         )}
+
         <button type="submit" className="task-submit-btn">
           Add Task
         </button>

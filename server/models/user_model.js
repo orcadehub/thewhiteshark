@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   completedTasks: [
     {
       taskId: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
-      status: { type: String, enum: ["start", "complete"], default: "start" },
+      status: { type: String,enum:["start", "complete"], default: "start" },
     },
   ],
   role: {

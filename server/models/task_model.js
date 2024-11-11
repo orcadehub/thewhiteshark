@@ -6,14 +6,13 @@ const taskSchema = new mongoose.Schema({
   points: { type: Number, required: true },
   category: {
     type: String,
-    enum: ["Earn", "Weekly", "New", "OnChain", "Friends"], // Updated categories
+    enum: ["Available", "Advanced"], // Updated categories
     required: true,
   },
-  friends: { type: Number, default: 0 }, // Number of friends referred, used only for "Friends" category
   dateCreated: { type: Date, default: Date.now },
   taskCompletion: {
     type: String,
-    enum: ["start", "complete"],
+    enum:["start","complete"],
     default: "start",
   },
   socialMediaPlatform: {
@@ -25,7 +24,7 @@ const taskSchema = new mongoose.Schema({
     type: String,
     default: null, // URL to the page that needs to be followed
   },
-  opensCount: { type: Number, default: 0 },
+  visitCount: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model("Task", taskSchema);
